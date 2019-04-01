@@ -6,7 +6,7 @@
 /*   By: lnicosia <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 11:13:15 by lnicosia          #+#    #+#             */
-/*   Updated: 2019/03/28 17:48:17 by lnicosia         ###   ########.fr       */
+/*   Updated: 2019/04/01 11:38:11 by lnicosia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,7 +254,7 @@ int		main(int ac, char **av)
 	}
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderPresent(renderer);
-	double moveSpeed = 0.25;
+	double moveSpeed = 0.15;
 	double rotSpeed = 0.01;
 	mouseX = event.motion.x;
 	mouseY = event.motion.y;
@@ -271,7 +271,7 @@ int		main(int ac, char **av)
 					|| (event.type == SDL_KEYUP
 						&& event.key.keysym.sym == SDLK_ESCAPE))
 				running = 0;
-			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
+			else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
 			{
 				if (worldMap[(int)(posX + dirX * moveSpeed)][(int)posY] == 0)
 					posX += dirX * moveSpeed;
@@ -280,7 +280,7 @@ int		main(int ac, char **av)
 				if (raytracing(surface, texture, renderer, window, img_str, &planeX, &planeY, &dirX, &dirY, &posX, &posY) != 0)
 					return (1);
 			}
-			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN)
+			else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN)
 			{
 				if (worldMap[(int)(posX - dirX * moveSpeed)][(int)posY] == 0)
 					posX -= dirX * moveSpeed;
@@ -289,22 +289,35 @@ int		main(int ac, char **av)
 				if (raytracing(surface, texture, renderer, window, img_str, &planeX, &planeY, &dirX, &dirY, &posX, &posY) != 0)
 					return (1);
 			}
-			if (event.type == SDL_MOUSEMOTION)
+			else if (event.type == SDL_MOUSEMOTION)
 			{
 				SDL_CaptureMouse(SDL_TRUE);
+				//(void)rotSpeed;
 				double diff = (mouseX - event.motion.x) * rotSpeed;
 				//ft_printf("%f\n", diff);
 				if (diff < 0)
 				{
+					/*double oldDirX = dirX;
+					dirX = (dirX * cos(-rotSpeed) - dirY * sin(-rotSpeed));
+					dirY = (oldDirX * sin(-rotSpeed) + dirY * cos(-rotSpeed));
+					double oldPlaneX = planeX;
+					planeX = (planeX * cos(-rotSpeed) - planeY * sin(-rotSpeed));
+					planeY = (oldPlaneX * sin(-rotSpeed) + planeY * cos(-rotSpeed));*/
 					double oldDirX = dirX;
 					dirX = (dirX * cos(diff) - dirY * sin(diff));
 					dirY = (oldDirX * sin(diff) + dirY * cos(diff));
 					double oldPlaneX = planeX;
-					planeX = (planeX * cos(-diff) - planeY * sin(diff));
+					planeX = (planeX * cos(diff) - planeY * sin(diff));
 					planeY = (oldPlaneX * sin(diff) + planeY * cos(diff));
 				}
 				else if (diff > 0)
 				{
+					/*double oldDirX = dirX;
+					dirX = (dirX * cos(rotSpeed) - dirY * sin(rotSpeed));
+					dirY = (oldDirX * sin(rotSpeed) + dirY * cos(rotSpeed));
+					double oldPlaneX = planeX;
+					planeX = (planeX * cos(rotSpeed) - planeY * sin(rotSpeed));
+					planeY = (oldPlaneX * sin(rotSpeed) + planeY * cos(rotSpeed));*/
 					double oldDirX = dirX;
 					dirX = (dirX * cos(diff) - dirY * sin(diff));
 					dirY = (oldDirX * sin(diff) + dirY * cos(diff));
