@@ -6,7 +6,7 @@
 /*   By: lnicosia <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 11:13:15 by lnicosia          #+#    #+#             */
-/*   Updated: 2019/04/01 11:38:11 by lnicosia         ###   ########.fr       */
+/*   Updated: 2019/04/01 14:31:55 by lnicosia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,23 @@ int worldMap[24][24] =
 void	clear_img(int *img_str)
 {
 	int y = 0;
+	while (y < h / 2)
+	{
+		int x = 0;
+		while (x < w)
+		{
+			img_str[x + y * w] = 0x444444FF;
+			x++;
+		}
+		y++;
+	}
+	y = h / 2;
 	while (y < h)
 	{
 		int x = 0;
 		while (x < w)
 		{
-			img_str[x + y * w] = 0xFF;
+			img_str[x + y * w] = 0x222222FF;
 			x++;
 		}
 		y++;
@@ -211,6 +222,7 @@ int		main(int ac, char **av)
 	double planeX = 0, planeY = 0.66;
 	int		mouseX = 0;
 	int		mouseY = 0;
+	int		redraw = 0;
 	/*double time = 0;
 	  double oldTime = 0;*/
 
@@ -255,11 +267,11 @@ int		main(int ac, char **av)
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderPresent(renderer);
 	double moveSpeed = 0.15;
-	double rotSpeed = 0.01;
+	double rotSpeed = 0.001;
 	mouseX = event.motion.x;
 	mouseY = event.motion.y;
 	//ft_printf("%p\nError = %s\n", SDL_GetMouseFocus(), SDL_GetError());
-	ft_printf("%d\nError = %s\n", SDL_SetRelativeMouseMode(SDL_TRUE), SDL_GetError());
+	SDL_SetRelativeMouseMode(SDL_TRUE);
 	//SDL_SetWindowInputFocus(window);
 	if (raytracing(surface, texture, renderer, window, img_str, &planeX, &planeY, &dirX, &dirY, &posX, &posY) != 0)
 		return (1);
@@ -267,42 +279,16 @@ int		main(int ac, char **av)
 	{
 		while (SDL_PollEvent(&event))
 		{
+			SDL_CaptureMouse(SDL_TRUE);
 			if (event.type == SDL_QUIT
 					|| (event.type == SDL_KEYUP
 						&& event.key.keysym.sym == SDLK_ESCAPE))
 				running = 0;
-			else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
+			else
 			{
-				if (worldMap[(int)(posX + dirX * moveSpeed)][(int)posY] == 0)
-					posX += dirX * moveSpeed;
-				if (worldMap[(int)posX][(int)(posY + dirY * moveSpeed)] == 0)
-					posY += dirY * moveSpeed;
-				if (raytracing(surface, texture, renderer, window, img_str, &planeX, &planeY, &dirX, &dirY, &posX, &posY) != 0)
-					return (1);
-			}
-			else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN)
-			{
-				if (worldMap[(int)(posX - dirX * moveSpeed)][(int)posY] == 0)
-					posX -= dirX * moveSpeed;
-				if (worldMap[(int)posX][(int)(posY - dirY * moveSpeed)] == 0)
-					posY -= dirY * moveSpeed;
-				if (raytracing(surface, texture, renderer, window, img_str, &planeX, &planeY, &dirX, &dirY, &posX, &posY) != 0)
-					return (1);
-			}
-			else if (event.type == SDL_MOUSEMOTION)
-			{
-				SDL_CaptureMouse(SDL_TRUE);
-				//(void)rotSpeed;
-				double diff = (mouseX - event.motion.x) * rotSpeed;
-				//ft_printf("%f\n", diff);
-				if (diff < 0)
+				if (event.type == SDL_MOUSEMOTION)
 				{
-					/*double oldDirX = dirX;
-					dirX = (dirX * cos(-rotSpeed) - dirY * sin(-rotSpeed));
-					dirY = (oldDirX * sin(-rotSpeed) + dirY * cos(-rotSpeed));
-					double oldPlaneX = planeX;
-					planeX = (planeX * cos(-rotSpeed) - planeY * sin(-rotSpeed));
-					planeY = (oldPlaneX * sin(-rotSpeed) + planeY * cos(-rotSpeed));*/
+					double diff = -(event.motion.xrel) * rotSpeed;
 					double oldDirX = dirX;
 					dirX = (dirX * cos(diff) - dirY * sin(diff));
 					dirY = (oldDirX * sin(diff) + dirY * cos(diff));
@@ -310,26 +296,28 @@ int		main(int ac, char **av)
 					planeX = (planeX * cos(diff) - planeY * sin(diff));
 					planeY = (oldPlaneX * sin(diff) + planeY * cos(diff));
 				}
-				else if (diff > 0)
+				else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
 				{
-					/*double oldDirX = dirX;
-					dirX = (dirX * cos(rotSpeed) - dirY * sin(rotSpeed));
-					dirY = (oldDirX * sin(rotSpeed) + dirY * cos(rotSpeed));
-					double oldPlaneX = planeX;
-					planeX = (planeX * cos(rotSpeed) - planeY * sin(rotSpeed));
-					planeY = (oldPlaneX * sin(rotSpeed) + planeY * cos(rotSpeed));*/
-					double oldDirX = dirX;
-					dirX = (dirX * cos(diff) - dirY * sin(diff));
-					dirY = (oldDirX * sin(diff) + dirY * cos(diff));
-					double oldPlaneX = planeX;
-					planeX = (planeX * cos(diff) - planeY * sin(diff));
-					planeY = (oldPlaneX * sin(diff) + planeY * cos(diff));
+					if (worldMap[(int)(posX + dirX * moveSpeed)][(int)posY] == 0)
+						posX += dirX * moveSpeed;
+					if (worldMap[(int)posX][(int)(posY + dirY * moveSpeed)] == 0)
+						posY += dirY * moveSpeed;
 				}
-				mouseX = event.motion.x;
-				mouseY = event.motion.y;
-				if (raytracing(surface, texture, renderer, window, img_str, &planeX, &planeY, &dirX, &dirY, &posX, &posY) != 0)
-					return (1);
+				else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN)
+				{
+					if (worldMap[(int)(posX - dirX * moveSpeed)][(int)posY] == 0)
+						posX -= dirX * moveSpeed;
+					if (worldMap[(int)posX][(int)(posY - dirY * moveSpeed)] == 0)
+						posY -= dirY * moveSpeed;
+				}
+				redraw = 1;
 			}
+		}
+		if (redraw)
+		{
+			if (raytracing(surface, texture, renderer, window, img_str, &planeX, &planeY, &dirX, &dirY, &posX, &posY) != 0)
+				return (1);
+			redraw = 0;
 		}
 	}
 	quit(window, renderer, surface, texture);
