@@ -6,11 +6,11 @@
 #    By: lnicosia <lnicosia@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/12/06 15:56:21 by lnicosia          #+#    #+#              #
-#    Updated: 2019/04/02 17:24:53 by lnicosia         ###   ########.fr        #
+#    Updated: 2019/04/03 17:57:04 by lnicosia         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = raycasting
+NAME = test
 
 MAKEFILE = Makefile
 
@@ -22,9 +22,9 @@ BIN_DIR = .
 LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SRC_RAW = main.c
+SRC_RAW = main.c free_all.c init_sdl.c clear_image.c init_map.c
 
-HEADERS = raycasting.h
+HEADERS = raycasting.h utils.h
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_RAW))
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC_RAW:.c=.o))

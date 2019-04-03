@@ -1,19 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   raycasting.h                                       :+:      :+:    :+:   */
+/*   init_map.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lnicosia <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/03/27 11:12:38 by lnicosia          #+#    #+#             */
-/*   Updated: 2019/04/03 15:34:14 by lnicosia         ###   ########.fr       */
+/*   Created: 2019/04/03 17:57:06 by lnicosia          #+#    #+#             */
+/*   Updated: 2019/04/03 17:58:10 by lnicosia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef RAYCASTING_H
-# define RAYCASTING_H
+#include "utils.h"
 
-# include "SDL.h"
-# include "libft.h"
-
-#endif
+void	init_map(t_env *env)
+{
+	(void)env;
+}
