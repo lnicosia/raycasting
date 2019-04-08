@@ -6,7 +6,7 @@
 /*   By: lnicosia <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 15:26:43 by lnicosia          #+#    #+#             */
-/*   Updated: 2019/04/03 17:58:05 by lnicosia         ###   ########.fr       */
+/*   Updated: 2019/04/04 14:33:07 by lnicosia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,30 @@ typedef struct	s_v2
 	double	y;
 }				t_v2;
 
+typedef struct	s_v3
+{
+	double	x;
+	double	y;
+	double	z;
+}				t_v3;
+
 typedef struct	s_sector
 {
 	double			floor;
 	double			ceiling;
-	struct s_wall	*walls;
+	short			num;
+	t_v2			*walls;
+	short			*neighbors;
+	short			nbwalls;
 }				t_sector;
 
 typedef struct	s_wall
 {
-	int			x;
-	int			y;
-	t_sector	*next;
+	double			x;
+	double			y;
+	short			num;
+	short			next_wall;
+	short			next_sector;
 }				t_wall;
 
 typedef struct	s_player
@@ -47,8 +59,12 @@ typedef struct	s_player
 typedef struct	s_map
 {
 	t_sector	*sectors;
-	t_wall		*walls;
+	short		*walls;
 }				t_map;
+
+/*
+** SDL data necessities
+*/
 
 typedef struct	s_sdl
 {
@@ -63,6 +79,7 @@ typedef struct	s_sdl
 typedef struct	s_env
 {
 	t_sdl			sdl;
+	t_map			map;
 	int				w;
 	int				h;
 	int				running;

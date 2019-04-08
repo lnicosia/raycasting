@@ -6,7 +6,7 @@
 #    By: lnicosia <lnicosia@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/12/06 15:56:21 by lnicosia          #+#    #+#              #
-#    Updated: 2019/04/03 17:57:04 by lnicosia         ###   ########.fr        #
+#    Updated: 2019/04/08 11:02:21 by lnicosia         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,9 @@ BIN_DIR = .
 LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SRC_RAW = main.c free_all.c init_sdl.c clear_image.c init_map.c
+SRC_RAW = raycasting.c
+
+SRC_RAW2 = main.c free_all.c init_sdl.c clear_image.c init_map.c
 
 HEADERS = raycasting.h utils.h
 
