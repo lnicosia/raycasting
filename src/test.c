@@ -6,7 +6,7 @@
 /*   By: lnicosia <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 14:27:31 by lnicosia          #+#    #+#             */
-/*   Updated: 2019/04/03 14:35:59 by lnicosia         ###   ########.fr       */
+/*   Updated: 2019/04/08 15:21:22 by lnicosia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,21 +262,30 @@ static void DrawScreen()
 
 int main()
 {
+	SDL_Window *window = SDL_CreateWindow("cd", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, W, H, SDL_WINDOW_MOUSE_FOCUS);
 	LoadData();
-
-	surface = SDL_SetVideoMode(W, H, 32, 0);
+	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+	surface = SDL_CreateRGBSurfaceWithFormat(0, W, H, 32, SDL_PIXELFORMAT_RGB888);
+	SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+	
+	/*surface = SDL_SetVideoMode(W, H, 32, 0);
 
 	SDL_EnableKeyRepeat(150, 30);
-	SDL_ShowCursor(SDL_DISABLE);
+	SDL_ShowCursor(SDL_DISABLE);*/
 
 	int wsad[4]={0,0,0,0}, ground=0, falling=1, moving=0, ducking=0;
 	float yaw = 0;
 	for(;;)
 	{
-		SDL_LockSurface(surface);
+		/*SDL_LockSurface(surface);
 		DrawScreen();
 		SDL_UnlockSurface(surface);
-		SDL_Flip(surface);
+		SDL_Flip(surface);*/
+
+		DrawScreen();
+		texture = SDL_CreateTextureFromSurface(renderer, surface);
+		SDL_RenderCopy(renderer, texture, NULL, NULL);
+		SDL_RenderPresent(renderer);
 
 		/* Vertical collision detection */
 		float eyeheight = ducking ? DuckHeight : EyeHeight;
@@ -336,9 +345,11 @@ int main()
 			MovePlayer(dx, dy);
 			falling = 1;
 		}
-
+		SDL_SetRelativeMouseMode(SDL_TRUE);
 		SDL_Event ev;
 		while(SDL_PollEvent(&ev))
+		{
+			SDL_CaptureMouse(SDL_TRUE);
 			switch(ev.type)
 			{
 				case SDL_KEYDOWN:
@@ -349,7 +360,7 @@ int main()
 						case 's': wsad[1] = ev.type==SDL_KEYDOWN; break;
 						case 'a': wsad[2] = ev.type==SDL_KEYDOWN; break;
 						case 'd': wsad[3] = ev.type==SDL_KEYDOWN; break;
-						case 'q': goto done;
+						case SDLK_ESCAPE: goto done;
 						case ' ': /* jump */
 								  if(ground) { player.velocity.z += 0.5; falling = 1; }
 								  break;
@@ -360,12 +371,13 @@ int main()
 					break;
 				case SDL_QUIT: goto done;
 			}
+		}
 
 		/* mouse aiming */
 		int x,y;
 		SDL_GetRelativeMouseState(&x,&y);
 		player.angle += x * 0.03f;
-		yaw          = clamp(yaw - y*0.05f, -5, 5);
+		yaw          = clamp(yaw + y*0.05f, -5, 5);
 		player.yaw   = yaw - player.velocity.z*0.5f;
 		MovePlayer(0,0);
 
