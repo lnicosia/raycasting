@@ -6,7 +6,7 @@
 /*   By: lnicosia <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/03 14:27:31 by lnicosia          #+#    #+#             */
-/*   Updated: 2019/04/08 15:21:22 by lnicosia         ###   ########.fr       */
+/*   Updated: 2019/04/09 18:11:30 by lnicosia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 #include <SDL.h>
 
 /* Define window size */
-#define W 608
-#define H 480
+#define W 1000
+#define H 1000
 /* Define various vision related constants */
 #define EyeHeight  6    // Camera height from floor when standing
 #define DuckHeight 2.5  // And when crouching
@@ -235,7 +235,7 @@ static void DrawScreen()
 					int nya = (x - x1) * (ny2a-ny1a) / (x2-x1) + ny1a, cnya = clamp(nya, ytop[x],ybottom[x]);
 					int nyb = (x - x1) * (ny2b-ny1b) / (x2-x1) + ny1b, cnyb = clamp(nyb, ytop[x],ybottom[x]);
 					/* If our ceiling is higher than their ceiling, render upper wall */
-					unsigned r1 = 0x010101 * (255-z), r2 = 0x040007 * (31-z/8);
+					unsigned r1 = 0x010000 * (255-clamp(z, 0, 255)), r2 = 0x040007 * (31-clamp(z, 0, 255)/8);
 					vline(x, cya, cnya-1, 0, x==x1||x==x2 ? 0 : r1, 0); // Between our and their ceiling
 					ytop[x] = clamp(max(cya, cnya), ytop[x], H-1);   // Shrink the remaining window below these ceilings
 					/* If our floor is lower than their floor, render bottom wall */
@@ -245,7 +245,7 @@ static void DrawScreen()
 				else
 				{
 					/* There's no neighbor. Render wall from top (cya = ceiling level) to bottom (cyb = floor level). */
-					unsigned r = 0x010101 * (255-z);
+					unsigned r = 0x010101 * (255-clamp(z, 0, 255));
 					vline(x, cya, cyb, 0, x==x1||x==x2 ? 0 : r, 0);
 				}
 			}
